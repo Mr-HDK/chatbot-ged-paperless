@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: meine_chatbot_backend
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      PAPERLESS_BASE_URL: ${PAPERLESS_BASE_URL}
+      PAPERLESS_TOKEN: ${PAPERLESS_TOKEN}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:4b}
+      TOP_K: ${TOP_K:-6}
+      MAX_CONTEXT_CHARS: ${MAX_CONTEXT_CHARS:-12000}
+      REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-120}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: meine_chatbot_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    restart: unless-stopped
